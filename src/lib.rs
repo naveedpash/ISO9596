@@ -1,5 +1,5 @@
 #![allow(dead_code)]
-
+use rasn::de::Error;
 use rasn::{types::*, *};
 
 // Object Identifiers
@@ -147,7 +147,7 @@ impl<U: Encode> Encode for CMIPAbortInfo<U> {
     fn encode_with_tag<E: Encoder>(&self, encoder: &mut E, tag: Tag) -> Result<(), E::Error> {
         encoder.encode_sequence(tag, |sequence| {
             self.abort_source
-                .encode_with_tag(sequence, TAG_CMIPABORTINFO_0);
+                .encode_with_tag(sequence, TAG_CMIPABORTINFO_0)?;
             match &self.user_info {
                 None => (),
                 Some(u) => u.encode_with_tag(sequence, TAG_CMIPABORTINFO_1)?,
@@ -165,7 +165,7 @@ impl<U: Decode> Decode for CMIPAbortInfo<U> {
         let abort_source = match enumerated.to_string().as_str() {
             "0" => CMIPAbortSource::CMISEServiceUser,
             "1" => CMIPAbortSource::CMISEServiceProvider,
-            _ => return,
+            _ => return Err(Error::custom("Unexpected value for CMIPAbortSource in PDU CMIPAbortInfo")),
         };
         let mut user_info: Option<InstanceOf<U>> = None;
         match sequence.peek_tag() {
