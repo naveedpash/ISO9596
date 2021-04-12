@@ -1,5 +1,5 @@
 [package]
-name = "asn_experiment"
+name = "ISO9596"
 version = "0.1.0"
 authors = ["Naveed Aman Pasha <naveedpash@gmail.com>"]
 edition = "2018"
